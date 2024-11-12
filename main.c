@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "map.h"
+#include "Tree.h"
 
 int main() {
     t_map map;
@@ -32,5 +33,15 @@ int main() {
         printf("\n");
     }
     displayMap(map);
+
+
+
+
+    // notre partie de code
+    createTree(11);
+
+
+
+
     return 0;
 }
