@@ -7,11 +7,12 @@
 
 #ifndef UNTITLED1_TREE_H
 #define UNTITLED1_TREE_H
-
+#include "loc.h"
 
 typedef struct s_node
 {
     int value;
+    t_localisation loc;
     struct s_node **sons;
     int nbSons; // taille physique du tableau
     // more to come !
@@ -28,7 +29,7 @@ t_tree createTree(int val);
 
 t_node *createBranch(int val);
 
-
+void fill_Tree(t_node *node);
 
 
 

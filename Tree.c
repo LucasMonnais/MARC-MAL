@@ -3,9 +3,9 @@
 //
 
 #include "Tree.h"
+#include "loc.h"
 #include <stdio.h>
 #include <stdlib.h>
-
 
 
 t_node *createNode(int val, int nb_sons)
@@ -45,13 +45,47 @@ t_node *createBranch(int val){
 
     return branch;
 }
-/*
-void fill_Tree(t_node *node){
-    if (node->nb_sons <= 0) {
-        return;
-    }
-    node->nbSons = node->sons;
-    node->value = (t_node **)malloc(node->nbSons* sizeof(t_node *));
 
+
+ void fillTree(t_node *node, int map[5][5], int x_max, int y_max) {
+    if ( node == NULL) return;
+
+    // Position de départ de Marc dans ce nœud
+    t_position currentPos = node->loc.pos;
+
+    // Mouvement 1: Avancer de 10 m
+    t_position forwardPos = UP(currentPos);
+    if (isValidLocalisation(forwardPos, x_max, y_max)) {
+        node->sons[0]->value = map[forwardPos.y][forwardPos.x];
+        node->sons[0]->loc.pos = forwardPos;
+    }
+
+    // Mouvement 2: Quart de tour à gauche
+    t_orientation leftOri = (node->loc.ori + 3) % 4;
+    node->sons[1]->value = node->value;  // Orientation change seulement
+    node->sons[1]->loc.ori = leftOri;
+
+    // Mouvement 3: Quart de tour à droite
+    t_orientation rightOri = (node->loc.ori + 1) % 4;
+    node->sons[2]->value = node->value;  // Orientation change seulement
+    node->sons[2]->loc.ori = rightOri;
+
+    // Mouvement 4: Avancer de 20 m (deux fois avancer)
+    t_position forwardPos20 = UP(forwardPos);
+    if (isValidLocalisation(forwardPos20, x_max, y_max)) {
+        node->sons[3]->value = map[forwardPos20.y][forwardPos20.x];
+        node->sons[3]->loc.pos = forwardPos20;
+    }
+
+    // Mouvement 5: Reculer de 10 m
+    t_position backwardPos = DOWN(currentPos);
+    if (isValidLocalisation(backwardPos, x_max, y_max)) {
+        node->sons[4]->value = map[backwardPos.y][backwardPos.x];
+        node->sons[4]->loc.pos = backwardPos;
+    }
+
+    // Appel récursif pour les fils
+    for (int i = 0; i < node->nbSons; i++) {
+        fillTree(node->sons[i], map, x_max, y_max);
+    }
 }
-*/
