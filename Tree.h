@@ -29,7 +29,9 @@ t_tree createTree(int val);
 
 t_node *createBranch(int val);
 
-void fill_Tree(t_node *node);
+void fillTree(t_node *node, int **map, int y_max, int x_max, int *list_mvt_already_done,int dept,int maxDepth);
+
+void displayTree(t_node *node);
 
 
 

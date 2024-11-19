@@ -38,8 +38,16 @@ int main() {
 
 
     // notre partie de code
-    createTree(11);
+    t_node *startnode = createNode(10,5);
+    startnode->loc = loc_init(4,6,NORTH);
 
+    t_tree starttree = createTree(5,startnode);
+
+    int list_mvt_already_done[5];
+
+    fillTree(starttree.root, map.costs,map.y_max,map.x_max,list_mvt_already_done,0,4);
+
+    displayTree(starttree.root);
 
 
 
