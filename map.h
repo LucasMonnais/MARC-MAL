@@ -56,4 +56,28 @@ t_map createMapFromFile(char *);
  */
 void displayMap(t_map);
 
+/* prototypes of local functions */
+/* local functions are used only in this file, as helper functions */
+
+/**
+ * @brief :  function to get the position of the base station
+ * @param map : the map
+ * @return : the position of the base station
+ */
+t_position getBaseStationPosition(t_map);
+
+/**
+ * @brief : function to calculate costs of the map  from the base station
+ * @param map : the map
+ * @return none
+ */
+void calculateCosts(t_map);
+
+/**
+ * @brief : function to remove 'false' crevasses costs from the costs array
+ * @param map : the map
+ * @return none
+ */
+void removeFalseCrevasses(t_map);
+
 #endif //UNTITLED1_MAP_H

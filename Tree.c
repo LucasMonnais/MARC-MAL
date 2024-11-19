@@ -4,6 +4,7 @@
 
 #include "Tree.h"
 #include "loc.h"
+#include "moves.h"
 #include <stdio.h>
 #include <stdlib.h>
 
