@@ -25,7 +25,7 @@ typedef struct s_tree
 
 t_node *createNode(int val, int nb_sons);
 
-t_tree createTree(int val);
+t_tree createTree(int val,t_node *startnode);
 
 t_node *createBranch(int val);
 
