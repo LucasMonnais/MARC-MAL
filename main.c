@@ -45,10 +45,11 @@ int main() {
 
     int list_mvt_already_done[5];
 
-    fillTree(starttree.root, map.costs,map.y_max,map.x_max,list_mvt_already_done,0,4);
+    int maxDepth = 5;
+    t_move ls_mvt[] = {F_10,F_20,F_10,U_TURN,U_TURN,B_10,F_30,B_10,T_LEFT};
+    fillTree(starttree.root, map,map.y_max,map.x_max,list_mvt_already_done,0,maxDepth,ls_mvt);
 
     displayTree(starttree.root);
-
 
 
     return 0;

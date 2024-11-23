@@ -44,7 +44,7 @@ t_node *createBranch(int val){
     t_node *branch = createNode(10000, val);
     if (val>0){
         for(int i=0; i<val; i++){
-            branch->sons[i] = createBranch(val-1);
+            branch->sons[i] = createBranch(val-1, maxdepth);
         }
 
     }
@@ -67,108 +67,166 @@ int IsMvtAlreadyDone(int *list, int nbElt, int value){
 
 
 
- void fillTree(t_node *node,int **map, int y_max, int x_max, int *list,int depth,int maxDepth) {
-     if (node == NULL) return;
-     if (map[node->loc.pos.y][node->loc.pos.x] >= 10000) return;
+void fillTree(t_node *node,t_map map, int y_max, int x_max, int *list,int depth,int maxDepth, t_move *ls_mvt) {
+    if (node == NULL) return;
+    if (map.costs[node->loc.pos.y][node->loc.pos.x] >= 10000) return;
 
-     if (maxDepth<=depth) return;
+    if (maxDepth<=depth) return;
 
-     int i = 0;
+    int i = 0;
+    int a = -1;
 
+    a =IsMvtAlreadyDone(list, depth, F_10,ls_mvt);
+    if ( a >-1) {
+        // Mouvement 1: Avancer de 10 m
+        t_localisation forwardPos = moveTypeGround(node->loc, map,  F_10);
 
-      if (IsMvtAlreadyDone(list, depth, 1)) {
-      // Mouvement 1: Avancer de 10 m
-          t_localisation forwardPos = translate(node->loc, F_10);
+        if (isValidLocalisation(forwardPos.pos, x_max, y_max)) {
+            node->sons[i]->value = map.costs[forwardPos.pos.y][forwardPos.pos.x];
 
-          if (isValidLocalisation(forwardPos.pos, x_max, y_max)) {
-             node->sons[i]->value = map[forwardPos.pos.y][forwardPos.pos.x];
+            node->sons[i]->loc = forwardPos;
 
-             node->sons[i]->loc = forwardPos;
+            list[depth] = a;
 
-             // Ajout du mvt dans la liste
-             list[depth] = 1;
+            // Appel récursif pour les fils
+            fillTree(node->sons[i], map, y_max, x_max, list, depth + 1, maxDepth, ls_mvt);
 
-             // Appel récursif pour les fils
-             fillTree(node->sons[i], map, y_max, x_max, list, depth + 1, maxDepth);
-             i++;
-         }
-      }
+        }
+        i++;
+    }
 
+    a =IsMvtAlreadyDone(list, depth, T_LEFT,ls_mvt);
+    if (a>-1) {
+        // Mouvement 2: Quart de tour à gauche
+        t_localisation leftOri = moveTypeGround(node->loc, map,  T_LEFT);;
 
-      if (IsMvtAlreadyDone(list, depth, 2)) {
-          // Mouvement 2: Quart de tour à gauche
-          t_orientation leftOri = rotate(node->loc.ori, T_LEFT);
+        node->sons[i]->value = node->value;  // Orientation change seulement
 
-          node->sons[i]->value = node->value;  // Orientation change seulement
-
-          node->sons[i]->loc.ori = leftOri;
-          node->sons[i]->loc.pos.x = node->loc.pos.x;
-          node->sons[i]->loc.pos.y = node->loc.pos.y;
-
-
-          // Ajout du mvt dans la liste
-          list[depth] = 2;
-
-          // Appel récursif pour les fils
-          fillTree(node->sons[i], map, y_max, x_max, list, depth + 1, maxDepth);
-          i++;
-      }
-
-      if (IsMvtAlreadyDone(list, depth, 3)) {
-          // Mouvement 3: Quart de tour à droite
-          t_orientation rightOri = rotate(node->loc.ori, T_RIGHT);
-
-          node->sons[i]->value = node->value;  // Orientation change seulement
-
-          node->sons[i]->loc.ori = rightOri;
-          node->sons[i]->loc.pos.x = node->loc.pos.x;
-          node->sons[i]->loc.pos.y = node->loc.pos.y;
-
-          // Ajout du mvt dans la liste
-          list[depth] = 3;
+        node->sons[i]->loc = leftOri;
 
 
-          // Appel récursif pour les fils
-          fillTree(node->sons[i], map, y_max, x_max, list, depth + 1, maxDepth);
-          i++;
-      }
+        // Ajout du mvt dans la liste
+        list[depth] = a;
 
-      if (IsMvtAlreadyDone(list, depth, 4)) {
-          // Mouvement 4: Avancer de 20 m
-          t_localisation forwardPos = translate(node->loc, F_10);
-          if (isValidLocalisation(forwardPos.pos, x_max, y_max)  && map[forwardPos.pos.y][forwardPos.pos.x] < 10000) {
-              t_localisation forwardPos2 = translate(node->loc, F_20);
-              if (isValidLocalisation(forwardPos2.pos, x_max, y_max)) {
+        // Appel récursif pour les fils
+        fillTree(node->sons[i], map, y_max, x_max, list, depth + 1, maxDepth, ls_mvt);
+        i++;
+    }
 
-                  node->sons[i]->value = map[forwardPos2.pos.y][forwardPos2.pos.x];
-                  printf("avance de 20 mon coup etait %d et sera %d fdp\n", node->value, node->sons[i]->value);
-                  node->sons[i]->loc = forwardPos2;
+    a =IsMvtAlreadyDone(list, depth, T_RIGHT,ls_mvt);
+    if (a>-1) {
+        // Mouvement 3: Quart de tour à droite
+        t_localisation rightOri = moveTypeGround(node->loc, map,  T_RIGHT);;
 
-                  // Ajout du mvt dans la liste
-                  list[depth] = 4;
+        node->sons[i]->value = node->value;  // Orientation change seulement
+
+        node->sons[i]->loc = rightOri;
 
 
-                  // Appel récursif pour les fils
-                  fillTree(node->sons[i], map, y_max, x_max, list, depth + 1, maxDepth);
-                  i++;
-              }
-          }
+        // Ajout du mvt dans la liste
+        list[depth] = a;
+
+
+        // Appel récursif pour les fils
+        fillTree(node->sons[i], map, y_max, x_max, list, depth + 1, maxDepth,ls_mvt);
+        i++;
+    }
+
+    a =IsMvtAlreadyDone(list, depth, U_TURN,ls_mvt);
+    if (a>-1) {
+        // Mouvement 4: Demi-tour
+        t_localisation rightOri = moveTypeGround(node->loc, map,  U_TURN);
+
+        if (node->sons[i] == NULL) { // test pour voir si le pb vient de sons[i] eft non c'est pas ça
+            fprintf(stderr, "Erreur : node->sons[%d] est NULL\n", i);
+            return;
+        }
+
+        printf("marche pour depth %d branche %d avec val de %d\n",depth , i, node->value);
+        node->sons[i]->value = node->value;  // Orientation change seulement
+        printf("planté\n");
+//le pb doit être tt bête autre soucis je ne suis pas dôté d'intelligence
+        node->sons[i]->loc = rightOri;
+
+
+        // Ajout du mvt dans la liste
+        list[depth] = a;
+
+
+        // Appel récursif pour les fils
+        fillTree(node->sons[i], map, y_max, x_max, list, depth + 1, maxDepth, ls_mvt);
+        i++;
+    }
+
+    a =IsMvtAlreadyDone(list, depth, F_20,ls_mvt);
+    if (a>-1) {
+        // Mouvement 5: Avancer de 20 m
+
+        t_localisation forwardPos = translate(node->loc, F_10);
+        if (isValidLocalisation(forwardPos.pos, x_max, y_max)  && map.costs[forwardPos.pos.y][forwardPos.pos.x] < 10000) {
+            t_localisation forwardPos2 = moveTypeGround(node->loc, map, F_20);
+            if (isValidLocalisation(forwardPos2.pos, x_max, y_max)) {
+
+                node->sons[i]->value = map.costs[forwardPos2.pos.y][forwardPos2.pos.x];
+
+                node->sons[i]->loc = forwardPos2;
+
+                // Ajout du mvt dans la liste
+                list[depth] = a;
+
+
+                // Appel récursif pour les fils
+                fillTree(node->sons[i], map, y_max, x_max, list, depth + 1, maxDepth, ls_mvt);
+
+            }
+        }
+        i++;
+
+    }
+
+    a =IsMvtAlreadyDone(list, depth, F_30,ls_mvt);
+    if (a>-1) {
+        // Mouvement 6: Avancer de 30 m
+
+        t_localisation forwardPos = translate(node->loc, F_10);
+        if (isValidLocalisation(forwardPos.pos, x_max, y_max)  && map.costs[forwardPos.pos.y][forwardPos.pos.x] < 10000) {
+            t_localisation forwardPos2 = translate(node->loc, F_20);
+            if (isValidLocalisation(forwardPos2.pos, x_max, y_max) && map.costs[forwardPos2.pos.y][forwardPos2.pos.x] < 10000){
+                t_localisation forwardPos3 = moveTypeGround(node->loc, map, F_30);
+                if (isValidLocalisation(forwardPos3.pos, x_max, y_max)){
+
+                    node->sons[i]->value = map.costs[forwardPos3.pos.y][forwardPos3.pos.x];
+
+                    node->sons[i]->loc = forwardPos3;
+
+                    // Ajout du mvt dans la liste
+                    list[depth] = a;
+
+
+                    // Appel récursif pour les fils
+                    fillTree(node->sons[i], map, y_max, x_max, list, depth + 1, maxDepth, ls_mvt);
+
+                }
+            }
+        }
+        i++;
 
      }
 
 
 
-      if (IsMvtAlreadyDone(list, depth, 5)) {
-          // Mouvement 5: Reculer de 10 m
-          t_localisation backwardPos = translate(node->loc, B_10);
+    a =IsMvtAlreadyDone(list, depth, B_10,ls_mvt);
+    if (a>-1) {
+          // Mouvement 7: Reculer de 10 m
+          t_localisation backwardPos = moveTypeGround(node->loc, map, B_10);
 
 
           if (isValidLocalisation(backwardPos.pos, x_max, y_max)) {
-              node->sons[i]->value = map[backwardPos.pos.y][backwardPos.pos.x];
+              node->sons[i]->value = map.costs[backwardPos.pos.y][backwardPos.pos.x];
               node->sons[i]->loc = backwardPos;
 
               // Ajout du mvt dans la liste
-              list[depth] = 5;
+              list[depth] = a;
 
               // Appel récursif pour les fils
               fillTree(node->sons[i], map, y_max, x_max, list, depth + 1, maxDepth);
@@ -209,16 +267,77 @@ void displayTree(t_node *node){
         }
     }
     printf(" \n \n couche 5 : ");
-    for (int a=0; a<5; a++){
-        for (int b=0; b<4; b++){
-            for (int c=0; c<3; c++) {
-                for (int d=0; d<2; d++) {
-                    printf("%d ", node->sons[a]->sons[b]->sons[c]->sons[d]->sons[0]->value);
-
+    for (int a=0; a<7; a++){
+        for (int b=0; b<6; b++){
+            for (int c=0; c<5; c++) {
+                for (int d=0; d<4; d++) {
+                    for (int e=0; e<3; e++) {
+                        printf("%d ", node->sons[a]->sons[b]->sons[c]->sons[d]->sons[e]->value);
+                    }
                 }
             }
         }
     }
 
 }
+
+
+t_localisation moveTypeGround(t_localisation loc, t_map map, t_move move){
+    switch(map.soils[loc.pos.y][loc.pos.x]) {
+        case BASE_STATION :
+            return loc;
+        case PLAIN :
+            if (move == F_10 || move == F_20 || move == F_30 || move == B_10 ){
+                return translate(loc, move);
+            }
+            else{
+                loc.ori = rotate(loc.ori, move);
+                return loc;
+
+            }
+        case ERG :
+            switch (move) {
+                case F_10:
+                    return loc;
+                case F_20:
+                    return translate(loc, F_10);
+                case F_30:
+                    return translate(loc, F_20);
+                case B_10:
+                    return loc;
+                case T_LEFT:
+                    return loc;
+                case T_RIGHT:
+                    return loc;
+                case U_TURN:
+                    loc.ori = rotate(loc.ori, T_RIGHT);
+                    return loc;
+                default: // should not happen
+                    break;
+            }
+        case REG :
+
+            loc.nbREG ++;
+            if (move == F_10 || move == F_20 || move == F_30 || move == B_10 ){
+                return translate(loc, move);
+            }
+            else {
+                loc.ori = rotate(loc.ori, move);
+                return loc;
+            }
+
+
+        case CREVASSE :
+            if (move == F_10 || move == F_20 || move == F_30 || move == B_10 ){
+                return translate(loc, move);
+            }
+            else{
+                loc.ori = rotate(loc.ori, move);
+                return loc;
+            }
+    }
+}
+
+
+
 

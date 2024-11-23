@@ -3,8 +3,10 @@
 //
 
 #include "moves.h"
-#include "Tree.h"
+#include "map.h"
+
 #include <stdlib.h>
+#include <stdio.h>
 
 
 /* definition of local functions */
@@ -168,9 +170,4 @@ t_move *getRandomMoves(int N)
 }
 
 
-t_localisation moveTypeGround(t_localisation loc, int **mapGround, t_move move){
-    return loc;
-}
 
-// l'idee est de suivre un case pour chaque types de sol et adapter le move à effectuer en csq #commentaire à supp
-//-> il se peut qu'il y ait des choses a ajouter en parametre
