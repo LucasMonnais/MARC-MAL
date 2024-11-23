@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "map.h"
 #include "Tree.h"
+#include "moves.h"
 
 int main() {
     t_map map;
@@ -38,12 +39,12 @@ int main() {
 
 
     // notre partie de code
-    t_node *startnode = createNode(10,5);
+    t_node *startnode = createNode(10,7);
     startnode->loc = loc_init(4,6,NORTH);
 
-    t_tree starttree = createTree(5,startnode);
+    t_tree starttree = createTree(7,startnode,2);
 
-    int list_mvt_already_done[5];
+    int list_mvt_already_done[7];
 
     int maxDepth = 5;
     t_move ls_mvt[] = {F_10,F_20,F_10,U_TURN,U_TURN,B_10,F_30,B_10,T_LEFT};

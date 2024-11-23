@@ -32,6 +32,7 @@ typedef struct s_localisation
 {
     t_position      pos;
     t_orientation   ori;
+    int nbREG ;
 } t_localisation;
 
 /**

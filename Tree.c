@@ -16,7 +16,7 @@ t_node *createNode(int val, int nb_sons)
     new_node = (t_node *)malloc(sizeof(t_node));
     new_node->value = val;
     new_node->nbSons = nb_sons;
-    //new_node->loc = {0, 0, 0};
+    new_node->loc.nbREG = 0;
     if (nb_sons>0) {
         new_node->sons = (t_node **) malloc(nb_sons * sizeof(t_node *));
         for (int i = 0; i < nb_sons; i++) {
@@ -29,40 +29,57 @@ t_node *createNode(int val, int nb_sons)
     return new_node;
 }
 
-t_tree createTree(int val,t_node *startnode){
+t_tree createTree(int val,t_node *startnode,int nb_poss_minus_maxdepth){
     t_tree tree;
     tree.root = startnode;
     for(int i=0; i<val; i++){
-        tree.root->sons[i] = createBranch(val-1);
+        tree.root->sons[i] = createBranch(val-1,nb_poss_minus_maxdepth);
 
     }
     return tree;
 
 }
 
-t_node *createBranch(int val){
+t_node *createBranch(int val, int maxdepth){
     t_node *branch = createNode(10000, val);
-    if (val>0){
+    if (val>maxdepth){
         for(int i=0; i<val; i++){
             branch->sons[i] = createBranch(val-1, maxdepth);
         }
 
     }
+    else {
+        for(int i=0; i<val; i++){
+            branch->sons[i] = NULL;
+        }
+    }
 
     return branch;
 }
 
-int IsMvtAlreadyDone(int *list, int nbElt, int value){
-    if (list == NULL) return 1;
-    else {
-        for (int i = 0; i < nbElt; i++){
-            if (list[i] == value){
-                return 0;
+int IsMvtAlreadyDone(int *list, int nbElt, t_move move, t_move *ls_mouvement_tot) {
+    int trouve = 0;
+
+    for (int a = 0; a< 9; a++) {
+        if (ls_mouvement_tot[a] == move) {
+            for (int i = 0; i < nbElt; i++) {
+                if (a == list[i]){
+                    trouve = 1;
+                }
+
+
             }
 
         }
-        return 1;
+        if (trouve == 0){
+            return a;
+        }
+        else{
+            trouve=0;
+        }
     }
+    return -1;
+
 }
 
 
@@ -229,9 +246,10 @@ void fillTree(t_node *node,t_map map, int y_max, int x_max, int *list,int depth,
               list[depth] = a;
 
               // Appel récursif pour les fils
-              fillTree(node->sons[i], map, y_max, x_max, list, depth + 1, maxDepth);
-              i++;
+              fillTree(node->sons[i], map, y_max, x_max, list, depth + 1, maxDepth, ls_mvt);
+
           }
+          i++;
       }
 
 }
@@ -239,28 +257,32 @@ void fillTree(t_node *node,t_map map, int y_max, int x_max, int *list,int depth,
 void displayTree(t_node *node){
     printf(" couche 0 : %d \n \n", node->value);
     printf(" couche 1 : ");
-    for (int a=0; a<5; a++){
+
+    for (int a=0; a<7; a++){
         printf("%d ",node->sons[a]->value);
     }
     printf(" \n \n couche 2 : ");
-    for (int a=0; a<5; a++){
-        for (int b=0; b<4; b++){
+    for (int a=0; a<7; a++){
+        printf("\n");
+        for (int b=0; b<6; b++){
             printf("%d ",node->sons[a]->sons[b]->value);
         }
     }
     printf(" \n \n couche 3 : ");
-    for (int a=0; a<5; a++){
-        for (int b=0; b<4; b++){
-            for (int c=0; c<3; c++) {
+    for (int a=0; a<7; a++){
+        printf("\n");
+        for (int b=0; b<6; b++){
+            printf("\n");
+            for (int c=0; c<5; c++) {
                 printf("%d ", node->sons[a]->sons[b]->sons[c]->value);
             }
         }
     }
     printf(" \n \n couche 4 : ");
-    for (int a=0; a<5; a++){
-        for (int b=0; b<4; b++){
-            for (int c=0; c<3; c++) {
-                for (int d=0; d<2; d++) {
+    for (int a=0; a<7; a++){
+        for (int b=0; b<6; b++){
+            for (int c=0; c<5; c++) {
+                for (int d=0; d<4; d++) {
                     printf("%d ", node->sons[a]->sons[b]->sons[c]->sons[d]->value);
                 }
             }
