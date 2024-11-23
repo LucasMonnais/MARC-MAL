@@ -16,6 +16,7 @@ t_node *createNode(int val, int nb_sons)
     new_node = (t_node *)malloc(sizeof(t_node));
     new_node->value = val;
     new_node->nbSons = nb_sons;
+    //new_node->loc = {0, 0, 0};
     if (nb_sons>0) {
         new_node->sons = (t_node **) malloc(nb_sons * sizeof(t_node *));
         for (int i = 0; i < nb_sons; i++) {
@@ -73,20 +74,19 @@ int IsMvtAlreadyDone(int *list, int nbElt, int value){
      if (maxDepth<=depth) return;
 
      int i = 0;
-     printf("coucou");
 
 
       if (IsMvtAlreadyDone(list, depth, 1)) {
       // Mouvement 1: Avancer de 10 m
           t_localisation forwardPos = translate(node->loc, F_10);
 
-          if (isValidLocalisation(forwardPos.pos, y_max, x_max)) {
+          if (isValidLocalisation(forwardPos.pos, x_max, y_max)) {
              node->sons[i]->value = map[forwardPos.pos.y][forwardPos.pos.x];
+
              node->sons[i]->loc = forwardPos;
 
              // Ajout du mvt dans la liste
              list[depth] = 1;
-              printf("si sa montre 2 fois ce mesage je tue lucas");
 
              // Appel récursif pour les fils
              fillTree(node->sons[i], map, y_max, x_max, list, depth + 1, maxDepth);
@@ -94,32 +94,39 @@ int IsMvtAlreadyDone(int *list, int nbElt, int value){
          }
       }
 
-     printf("cENCU2");
+
       if (IsMvtAlreadyDone(list, depth, 2)) {
           // Mouvement 2: Quart de tour à gauche
           t_orientation leftOri = rotate(node->loc.ori, T_LEFT);
-          printf("f");
+
           node->sons[i]->value = node->value;  // Orientation change seulement
-          printf("d");
+
           node->sons[i]->loc.ori = leftOri;
-          printf("p");
+          node->sons[i]->loc.pos.x = node->loc.pos.x;
+          node->sons[i]->loc.pos.y = node->loc.pos.y;
+
 
           // Ajout du mvt dans la liste
           list[depth] = 2;
-          printf("n");
+
           // Appel récursif pour les fils
-          fillTree(node->sons[1], map, y_max, x_max, list, depth + 1, maxDepth);
+          fillTree(node->sons[i], map, y_max, x_max, list, depth + 1, maxDepth);
           i++;
       }
-     printf("fdp");
+
       if (IsMvtAlreadyDone(list, depth, 3)) {
           // Mouvement 3: Quart de tour à droite
           t_orientation rightOri = rotate(node->loc.ori, T_RIGHT);
+
           node->sons[i]->value = node->value;  // Orientation change seulement
+
           node->sons[i]->loc.ori = rightOri;
+          node->sons[i]->loc.pos.x = node->loc.pos.x;
+          node->sons[i]->loc.pos.y = node->loc.pos.y;
 
           // Ajout du mvt dans la liste
           list[depth] = 3;
+
 
           // Appel récursif pour les fils
           fillTree(node->sons[i], map, y_max, x_max, list, depth + 1, maxDepth);
@@ -129,10 +136,12 @@ int IsMvtAlreadyDone(int *list, int nbElt, int value){
       if (IsMvtAlreadyDone(list, depth, 4)) {
           // Mouvement 4: Avancer de 20 m
           t_localisation forwardPos = translate(node->loc, F_10);
-          if (isValidLocalisation(forwardPos.pos, y_max, x_max)  && map[node->loc.pos.y][node->loc.pos.x] <= 10000) {
+          if (isValidLocalisation(forwardPos.pos, x_max, y_max)  && map[forwardPos.pos.y][forwardPos.pos.x] < 10000) {
               t_localisation forwardPos2 = translate(node->loc, F_20);
-              if (isValidLocalisation(forwardPos2.pos, y_max, x_max)) {
+              if (isValidLocalisation(forwardPos2.pos, x_max, y_max)) {
+
                   node->sons[i]->value = map[forwardPos2.pos.y][forwardPos2.pos.x];
+                  printf("avance de 20 mon coup etait %d et sera %d fdp\n", node->value, node->sons[i]->value);
                   node->sons[i]->loc = forwardPos2;
 
                   // Ajout du mvt dans la liste

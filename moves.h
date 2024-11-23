@@ -6,6 +6,7 @@
 #define UNTITLED1_MOVES_H
 
 #include "loc.h"
+#include "Tree.h"
 
 /**
  * @brief Array of strings for the possible moves of the robot
@@ -67,6 +68,15 @@ t_orientation rotate(t_orientation, t_move );
  * @return the new localisation of the robot
  */
 t_localisation translate(t_localisation , t_move);
+
+/**
+ * @brief function to translate the robot according to a move, a position and the type of ground it is on
+ * @param loc : the localisation of the robot
+ * @param mapGround : map with all type of ground
+ * @param move : the move initially doing
+ * @return the move really done according to the type of ground
+ */
+t_localisation moveTypeGround(t_localisation loc, int **mapGround, t_move move);
 
 
 #endif //UNTITLED1_MOVES_H
