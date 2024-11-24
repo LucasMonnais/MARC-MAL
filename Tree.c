@@ -252,22 +252,22 @@ void displayTree(t_node *node){
     printf(" couche 0 : %d \n \n", node->value);
     printf(" couche 1 : ");
 
-    for (int a=0; a<7; a++){
+    for (int a=0; a<9; a++){
         printf("%d ",node->sons[a]->value);
     }
     printf(" \n \n couche 2 : ");
-    for (int a=0; a<7; a++){
+    for (int a=0; a<9; a++){
         printf("\n");
-        for (int b=0; b<6; b++){
+        for (int b=0; b<8; b++){
             printf("%d ",node->sons[a]->sons[b]->value);
         }
     }
     printf(" \n \n couche 3 : ");
-    for (int a=0; a<7; a++){
+    for (int a=0; a<9; a++){
         printf("\n");
-        for (int b=0; b<6; b++){
+        for (int b=0; b<8; b++){
             printf("\n");
-            for (int c=0; c<5; c++) {
+            for (int c=0; c<7; c++) {
                 printf("%d ", node->sons[a]->sons[b]->sons[c]->value);
             }
         }
@@ -356,4 +356,137 @@ t_localisation moveTypeGround(t_localisation loc, t_map map, t_move move){
 
 
 
+t_node *searchmin(t_node *node, int *path){
+    int maxdepth = node->loc.nbREG ;
+    t_node *min = createNode(100000, 2);
+    min->loc.nbREG = 10000;
+    if (maxdepth == 5 )
+    {
+        return node;
+    }
 
+
+    if (maxdepth == 4 ) {
+        for (int a = 0; a < 9; a++) {
+            if (min->value > node->sons[a]->value || (min->value >= node->sons[a]->value && min->loc.nbREG > node->sons[a]->loc.nbREG)){
+                min = node->sons[a];
+                path[0] = a;
+            }
+        }
+    }
+
+    if (maxdepth == 3 ) {
+
+        for (int a = 0; a < 9; a++) {
+            for (int b = 0; b < 8; b++) {
+                if (min->value > node->sons[a]->sons[b]->value || (min->value >= node->sons[a]->sons[b]->value && min->loc.nbREG > node->sons[a]->sons[b]->loc.nbREG)){
+                    min = node->sons[a]->sons[b];
+                    path[0] = a;
+                    path[1] = b;
+                }
+            }
+        }
+    }
+    if (maxdepth == 2 ) {
+
+        for (int a = 0; a < 9; a++) {
+            for (int b = 0; b < 8; b++) {
+                printf("\n");
+                for (int c = 0; c < 7; c++) {
+                    if (min->value > node->sons[a]->sons[b]->sons[c]->value || (min->value >= node->sons[a]->sons[b]->sons[c]->value && min->loc.nbREG > node->sons[a]->sons[b]->sons[c]->loc.nbREG)){
+                        min = node->sons[a]->sons[b]->sons[c];
+                        path[0] = a;
+                        path[1] = b;
+                        path[2]= c;
+                    }
+                }
+            }
+        }
+    }
+    if (maxdepth == 1 ) {
+
+        for (int a = 0; a < 9; a++) {
+            for (int b = 0; b < 8; b++) {
+                for (int c = 0; c < 7; c++) {
+                    for (int d = 0; d < 5; d++) {
+                        if (min->value > node->sons[a]->sons[b]->sons[c]->sons[d]->value || (min->value >= node->sons[a]->sons[b]->sons[c]->sons[d]->value && min->loc.nbREG > node->sons[a]->sons[b]->sons[c]->sons[d]->loc.nbREG)){
+                            min = node->sons[a]->sons[b]->sons[c]->sons[d];
+                            path[0] = a;
+                            path[1] = b;
+                            path[2]= c;
+                            path[3] = d;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    if (maxdepth == 0 ) {
+
+        for (int a = 0; a < 9; a++) {
+            for (int b = 0; b < 8; b++) {
+                for (int c = 0; c < 7; c++) {
+                    for (int d = 0; d < 6; d++) {
+                        for (int e = 0; e < 5; e++) {
+                            if (min->value >= node->sons[a]->sons[b]->sons[c]->sons[d]->sons[e]->value || (min->value >= node->sons[a]->sons[b]->sons[c]->sons[d]->sons[e]->value && min->loc.nbREG > node->sons[a]->sons[b]->sons[c]->sons[d]->sons[e]->loc.nbREG)){
+                                min = node->sons[a]->sons[b]->sons[c]->sons[d]->sons[e];
+                                path[0] = a;
+                                path[1] = b;
+                                path[2]= c;
+                                path[3] = d;
+                                path[4] = e;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return min;
+
+}
+
+t_move *trad_direction(t_move *ls_move, int nb_reg,int *path) {
+    mvt_in_tree *tab_mvt = (mvt_in_tree *)malloc( 7 * sizeof(mvt_in_tree));
+    for (int i = 0; i < 7; i++) {
+        tab_mvt[i].nb_mvt = 0;
+    }
+    tab_mvt[0].mvt = F_10;
+    tab_mvt[1].mvt = T_LEFT;
+    tab_mvt[2].mvt = T_RIGHT;
+    tab_mvt[3].mvt = U_TURN;
+    tab_mvt[4].mvt = F_20;
+    tab_mvt[5].mvt = F_30;
+    tab_mvt[6].mvt = B_10;
+    for (int i = 0; i< 9; i++){
+        for (int j = 0; j< 7 ; j++){
+            if (tab_mvt[j].mvt == ls_move[i]){
+                tab_mvt[j].nb_mvt ++;
+            }
+        }
+    }
+    t_move * ls_mvt_ef = (t_move *) malloc((5-nb_reg) * sizeof (t_move));
+    int trouve = 0;
+    int j = 0;
+    for (int i = 0; i < 5-nb_reg; i++){
+        trouve = 0 ;
+        j = 0;
+        while (trouve == 0){
+            for (int k = 0; k < 7; k++){
+                if (tab_mvt[k].nb_mvt!=0){
+                    if (j== path[i]){
+                        trouve = 1;
+                        tab_mvt[k].nb_mvt --;
+                        ls_mvt_ef[i] = tab_mvt[k].mvt;
+
+                    }
+                    j++;
+                }
+            }
+
+        }
+
+    }
+    return ls_mvt_ef;
+}

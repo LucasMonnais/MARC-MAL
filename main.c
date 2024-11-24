@@ -84,6 +84,6 @@ int main() {
         printf("\n");
         it_boucle++;
 
-
+    }
     return 0;
 }

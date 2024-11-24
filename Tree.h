@@ -1,3 +1,5 @@
+
+
 //
 // Created by anton on 12/11/2024.
 //
@@ -26,6 +28,19 @@ typedef struct s_tree
     t_node *root;
 } t_tree, *p_tree;
 
+typedef struct mvt_in_tree
+{
+    t_move mvt;
+    int nb_mvt;
+} mvt_in_tree;
+
+
+/**
+ * @brief Create a node
+ * @param val : value of the node
+ * @param nb_sons : number of sons of the node
+ * @return pointer to the node
+ */
 t_node *createNode(int val, int nb_sons);
 
 /**
@@ -83,8 +98,22 @@ int IsMvtAlreadyDone(int *list, int nbElt, t_move move, t_move *ls_mouvement_tot
  */
 t_localisation moveTypeGround(t_localisation loc, t_map map, t_move move);
 
+/**
+ * @brief function to get the minimum cost (and the minimum of reg in case of an equality) out of any path in a tree
+ * @param node : where the robot starts his path in the phase
+ * @param path : the best path of the phase
+ * @return the place where the robot end up (the start node of the next phase)
+ */
+t_node *searchmin(t_node *node, int *path);
 
-
+/**
+ * @brief transcribes path in a readable list of t_move
+ * @param ls_move : all the movement possible in the actual phase
+ * @param nb_reg : number of times we end up on a reg
+ * @param path : the unreadable path
+ * @return list of move of the path
+ */
+t_move *trad_direction(t_move *ls_move, int nb_reg, int* path);
 
 
 
