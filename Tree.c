@@ -283,11 +283,11 @@ void displayTree(t_node *node){
         }
     }
     printf(" \n \n couche 5 : ");
-    for (int a=0; a<7; a++){
-        for (int b=0; b<6; b++){
-            for (int c=0; c<5; c++) {
-                for (int d=0; d<4; d++) {
-                    for (int e=0; e<3; e++) {
+    for (int a=0; a<9; a++){
+        for (int b=0; b<8; b++){
+            for (int c=0; c<7; c++) {
+                for (int d=0; d<6; d++) {
+                    for (int e=0; e<5; e++) {
                         printf("%d ", node->sons[a]->sons[b]->sons[c]->sons[d]->sons[e]->value);
                     }
                 }
