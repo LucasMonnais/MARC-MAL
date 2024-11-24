@@ -69,6 +69,12 @@ t_orientation rotate(t_orientation, t_move );
  */
 t_localisation translate(t_localisation , t_move);
 
+/**
+ * @brief function to get a list of movement from a probability for each movement of t_move
+ * @param N : number of movements
+ * @return list of possible movements
+ */
+t_move *getRandomMoves(int N);
 
 
 

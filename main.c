@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <malloc.h>
 #include "map.h"
 #include "Tree.h"
 #include "moves.h"
@@ -39,18 +40,49 @@ int main() {
 
 
     // notre partie de code
-    t_node *startnode = createNode(10,7);
+    t_node *startnode = createNode(10,9);
     startnode->loc = loc_init(4,6,NORTH);
-
-    t_tree starttree = createTree(7,startnode,2);
-
-    int list_mvt_already_done[7];
-
+    startnode->loc.nbREG =0;
+    t_tree starttree = createTree(9,startnode,4);
+    t_node *end_node = startnode;
+    int *list_mvt_already_done= (int *) malloc(5 *sizeof (int *));
     int maxDepth = 5;
-    t_move ls_mvt[] = {F_10,F_20,F_10,U_TURN,U_TURN,B_10,F_30,B_10,T_LEFT};
-    fillTree(starttree.root, map,map.y_max,map.x_max,list_mvt_already_done,0,maxDepth,ls_mvt);
+    int it_boucle = 0;
 
-    displayTree(starttree.root);
+    while (end_node->value !=0) {
+
+
+        t_move *ls_mvt = getRandomMoves(9);
+
+        printf("The list of moves in boucle %d is -> ", it_boucle);
+        for (int i = 0; i < 9; i++) {
+            printf("%s :", getMoveAsString(ls_mvt[i]));
+        }
+
+        printf("\n");
+        free(list_mvt_already_done);
+        list_mvt_already_done= (int *) malloc(5 *sizeof (int *));
+        t_tree tree = createTree(end_node->value,end_node,9-5+end_node->loc.nbREG);
+
+        //t_move ls_mvt[] = {F_10,F_20,F_10,U_TURN,U_TURN,B_10,F_30,B_10,T_LEFT};
+
+        fillTree(end_node, map, map.y_max, map.x_max, list_mvt_already_done, 0, maxDepth-end_node->loc.nbREG, ls_mvt);
+
+        int *path = (int *) malloc((maxDepth - (end_node->loc.nbREG)) * sizeof(int));
+        //displayTree(starttree.root);
+
+        end_node = searchmin(end_node, path);
+
+        printf("valeur minimal de la boucle %d = %d avec %d passage par REG \n", it_boucle, end_node->value, end_node->loc.nbREG);
+        //printf("%d %d %d %d %d \n",path[0], path[1], path[2], path[3], path[4]);
+        t_move *ls_move_ef = trad_direction(ls_mvt, end_node->loc.nbREG, path);
+        printf("The list of moves in boucle %d done is -> ", it_boucle);
+
+        for (int i = 0; i < 5 - startnode->loc.nbREG; i++) {
+            printf("%s :", getMoveAsString(ls_move_ef[i]));
+        }
+        printf("\n");
+        it_boucle++;
 
 
     return 0;

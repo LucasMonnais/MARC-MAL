@@ -57,31 +57,30 @@ t_node *createBranch(int val, int maxdepth){
     return branch;
 }
 
+
 int IsMvtAlreadyDone(int *list, int nbElt, t_move move, t_move *ls_mouvement_tot) {
-    int trouve = 0;
-
-    for (int a = 0; a< 9; a++) {
+    for (int a = 0; a < 9; a++) {
+        // Check si le mvt fait partie de ceux à faire
         if (ls_mouvement_tot[a] == move) {
+            // Vérification si l'indice du mvt a déjà été utilisé
+            int trouve = 0;
             for (int i = 0; i < nbElt; i++) {
-                if (a == list[i]){
-                    trouve = 1;
+                if (list[i] == a) {
+                    trouve  = 1;
+                    break;
                 }
-
-
             }
 
-        }
-        if (trouve == 0){
-            return a;
-        }
-        else{
-            trouve=0;
+            // Si l'indice n'a pas été utilisé, on le retourne
+            if (!trouve) {
+                return a;
+            }
         }
     }
+
+    // Pour le reste on sort
     return -1;
-
 }
-
 
 
 void fillTree(t_node *node,t_map map, int y_max, int x_max, int *list,int depth,int maxDepth, t_move *ls_mvt) {
@@ -104,6 +103,7 @@ void fillTree(t_node *node,t_map map, int y_max, int x_max, int *list,int depth,
             node->sons[i]->loc = forwardPos;
 
             list[depth] = a;
+
 
             // Appel récursif pour les fils
             fillTree(node->sons[i], map, y_max, x_max, list, depth + 1, maxDepth, ls_mvt);
@@ -154,17 +154,10 @@ void fillTree(t_node *node,t_map map, int y_max, int x_max, int *list,int depth,
         // Mouvement 4: Demi-tour
         t_localisation rightOri = moveTypeGround(node->loc, map,  U_TURN);
 
-        if (node->sons[i] == NULL) { // test pour voir si le pb vient de sons[i] eft non c'est pas ça
-            fprintf(stderr, "Erreur : node->sons[%d] est NULL\n", i);
-            return;
-        }
 
-        printf("marche pour depth %d branche %d avec val de %d\n",depth , i, node->value);
         node->sons[i]->value = node->value;  // Orientation change seulement
-        printf("planté\n");
-//le pb doit être tt bête autre soucis je ne suis pas dôté d'intelligence
         node->sons[i]->loc = rightOri;
-
+        //problème résolu ici mtn il est ligne 268 (pour le B_10)
 
         // Ajout du mvt dans la liste
         list[depth] = a;
@@ -239,6 +232,7 @@ void fillTree(t_node *node,t_map map, int y_max, int x_max, int *list,int depth,
 
 
           if (isValidLocalisation(backwardPos.pos, x_max, y_max)) {
+              //printf("%d", node->sons[i]->value);
               node->sons[i]->value = map.costs[backwardPos.pos.y][backwardPos.pos.x];
               node->sons[i]->loc = backwardPos;
 
@@ -279,10 +273,10 @@ void displayTree(t_node *node){
         }
     }
     printf(" \n \n couche 4 : ");
-    for (int a=0; a<7; a++){
-        for (int b=0; b<6; b++){
-            for (int c=0; c<5; c++) {
-                for (int d=0; d<4; d++) {
+    for (int a=0; a<9; a++){
+        for (int b=0; b<8; b++){
+            for (int c=0; c<7; c++) {
+                for (int d=0; d<5; d++) {
                     printf("%d ", node->sons[a]->sons[b]->sons[c]->sons[d]->value);
                 }
             }
