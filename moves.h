@@ -74,8 +74,8 @@ t_localisation translate(t_localisation , t_move);
  * @param N : number of movements
  * @return list of possible movements
  */
-t_move *getRandomMoves(int N, int al);
+t_move *getRandomMoves(int N);
 
-
+//, int al
 
 #endif //UNTITLED1_MOVES_H

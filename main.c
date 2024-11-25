@@ -41,7 +41,7 @@ int main() {
 
 
     // notre partie de code
-
+    srand(time(NULL));
 
     struct timeval start1, end1, start2, end2, start3, end3, startGlob, endGlob;
     long seconds, microseconds;
@@ -60,8 +60,8 @@ int main() {
     while (end_node->value !=0 && it_boucle<10 && end_node->loc.nbREG < 5) {
 //
 
-        t_move *ls_mvt = getRandomMoves(9,(end_node->value+it_boucle)*14);
-
+        t_move *ls_mvt = getRandomMoves(9);
+//,(end_node->value+it_boucle)*14
         printf("The list of moves in boucle %d is -> ", it_boucle);
         for (int i = 0; i < 9; i++) {
             printf("%s :", getMoveAsString(ls_mvt[i]));

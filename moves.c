@@ -148,12 +148,12 @@ void updateLocalisation(t_localisation *p_loc, t_move m)
     *p_loc = move(*p_loc, m);
     return;
 }
-/*
+
 t_move *getRandomMoves(int N)
 {
     int nbmoves[]={22,15,7,7,21,21,7};
     int total_moves=100;
-    srand(time(NULL));
+
     t_move *moves = (t_move *)malloc(N * sizeof(t_move));
     for (int i = 0; i < N; i++)
     {
@@ -170,11 +170,11 @@ t_move *getRandomMoves(int N)
     }
     return moves;
 }
-*/
+
 
 
 //juste pour info c'est une méthode appelée LCG (Linear Congruential Generator) et qui va fonctonne en récursivité.
-
+/*
 #include <stdint.h>
 
 
@@ -228,6 +228,6 @@ t_move *getRandomMoves(int N, int al) {
     return moves;
 }
 
-
+*/
 
 
