@@ -43,7 +43,7 @@ int main() {
     // notre partie de code
 
 
-    struct timeval start1, end1, start2, end2, startGlob, endGlob;
+    struct timeval start1, end1, start2, end2, start3, end3, startGlob, endGlob;
     long seconds, microseconds;
 
 
@@ -100,7 +100,12 @@ int main() {
 
         printf("valeur minimal de la boucle %d = %d avec %d passage par REG \n", it_boucle, end_node->value, end_node->loc.nbREG-startnode->loc.nbREG);
 
+        gettimeofday(&start3, NULL);
         t_move *ls_move_ef = trad_direction(ls_mvt, startnode->loc.nbREG, path);
+        gettimeofday(&end3, NULL);
+        seconds = end3.tv_sec - start3.tv_sec;
+        microseconds = end3.tv_usec - start3.tv_usec;
+        double elapsed3 = seconds + microseconds * 1e-6;
         printf("The list of moves in boucle %d done is -> ", it_boucle);
 
         for (int i = 0; i < 5 - startnode->loc.nbREG; i++) {
@@ -113,7 +118,9 @@ int main() {
         }
         it_boucle++;
         printf("Time for creation Tree : %lf\n", elapsed1);
-        printf("Time to find minValue and his path : %lf\n", elapsed1);
+        printf("Time to find minValue : %lf\n", elapsed2);
+        printf("time to translate the path found in searchMin in a t_move sequence is : %lf\n", elapsed3);
+
     }
     if(basefound ==0){
         printf("marc n'a pas reussi a revenir a la base, il devra donc rester seul sur sa planete pendant des annees a mourir a petit feu et a voir tout ces composant se degrader de plus en plus jusqu'a qu il devienne poussiere, quel dommage :( \n");
