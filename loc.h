@@ -42,7 +42,7 @@ typedef struct s_localisation
  * @param ori : the orientation of the robot
  * @return the localisation of the robot
  */
-t_localisation loc_init(int, int, t_orientation);
+t_localisation loc_init(int, int, t_orientation, int nbREG);
 
 /**
  * @brief Function to check a valid position for the robot

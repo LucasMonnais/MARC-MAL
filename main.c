@@ -107,6 +107,10 @@ int main() {
             printf("%s :", getMoveAsString(ls_move_ef[i]));
         }
         printf("\n");
+        if(end_node->value ==0){
+            printf("marc a reussi a arriver a la base en %d serie de deplacement, yipie \n", it_boucle+1);
+            basefound =1;
+        }
         it_boucle++;
         printf("Time for creation Tree : %lf\n", elapsed1);
         printf("Time to find minValue and his path : %lf\n", elapsed1);

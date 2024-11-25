@@ -4,12 +4,13 @@
 
 #include "loc.h"
 
-t_localisation loc_init(int x, int y, t_orientation ori)
+t_localisation loc_init(int x, int y, t_orientation ori, int nbREG)
 {
     t_localisation loc;
     loc.pos.x = x;
     loc.pos.y = y;
     loc.ori = ori;
+    loc.nbREG = nbREG;
     return loc;
 }
 
