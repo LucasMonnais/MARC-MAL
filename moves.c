@@ -7,6 +7,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <time.h>
 
 
 /* definition of local functions */
@@ -116,7 +117,7 @@ t_localisation translate(t_localisation loc, t_move move)
         default:
             break;
     }
-    return loc_init(res.x, res.y, loc.ori);
+    return loc_init(res.x, res.y, loc.ori, loc.nbREG);
 
 }
 
@@ -147,11 +148,12 @@ void updateLocalisation(t_localisation *p_loc, t_move m)
     *p_loc = move(*p_loc, m);
     return;
 }
-
-/* t_move *getRandomMoves(int N)
+/*
+t_move *getRandomMoves(int N)
 {
     int nbmoves[]={22,15,7,7,21,21,7};
     int total_moves=100;
+    srand(time(NULL));
     t_move *moves = (t_move *)malloc(N * sizeof(t_move));
     for (int i = 0; i < N; i++)
     {
@@ -168,13 +170,13 @@ void updateLocalisation(t_localisation *p_loc, t_move m)
     }
     return moves;
 }
-
 */
+
 
 //juste pour info c'est une méthode appelée LCG (Linear Congruential Generator) et qui va fonctonne en récursivité.
 
 #include <stdint.h>
-#include <time.h>
+
 
 // Générateur congruentiel linéaire (LCG)
 static uint64_t seed; // Variable globale pour la graine
@@ -190,7 +192,7 @@ uint32_t lcg_random() {
 }
 
 // Fonction principale pour générer des mouvements
-t_move *getRandomMoves(int N) {
+t_move *getRandomMoves(int N, int al) {
     int nbmoves[] = {22, 15, 7, 7, 21, 21, 7};
     int total_moves = 100;
 
@@ -206,7 +208,7 @@ t_move *getRandomMoves(int N) {
 
     for (int i = 0; i < N; i++) {
         // Générer un nombre pseudo-aléatoire borné
-        int r = lcg_random() % total_moves;
+        int r = (lcg_random()+al) % total_moves;
 
         // Déterminer le type de mouvement correspondant
         int type = 0;

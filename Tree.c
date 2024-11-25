@@ -326,7 +326,7 @@ t_localisation moveTypeGround(t_localisation loc, t_map map, t_move move){
                 case T_RIGHT:
                     return loc;
                 case U_TURN:
-                    loc.ori = rotate(loc.ori, T_RIGHT);
+                    loc.ori = rotate(loc.ori, T_LEFT);
                     return loc;
                 default: // should not happen
                     break;
@@ -391,7 +391,6 @@ t_node *searchmin(t_node *node, int *path){
 
         for (int a = 0; a < 9; a++) {
             for (int b = 0; b < 8; b++) {
-                printf("\n");
                 for (int c = 0; c < 7; c++) {
                     if (min->value > node->sons[a]->sons[b]->sons[c]->value || (min->value >= node->sons[a]->sons[b]->sons[c]->value && min->loc.nbREG > node->sons[a]->sons[b]->sons[c]->loc.nbREG)){
                         min = node->sons[a]->sons[b]->sons[c];
