@@ -62,7 +62,7 @@ int main() {
 
         t_move *ls_mvt = getRandomMoves(9);
 //,(end_node->value+it_boucle)*14
-        printf("The list of moves in boucle %d is -> ", it_boucle);
+        printf("The list of moves in phase %d is -> ", it_boucle);
         for (int i = 0; i < 9; i++) {
             printf("%s :", getMoveAsString(ls_mvt[i]));
         }
@@ -98,7 +98,7 @@ int main() {
         double elapsed2 = seconds + microseconds * 1e-6;
 
 
-        printf("valeur minimal de la boucle %d = %d avec %d passage par REG \n", it_boucle, end_node->value, end_node->loc.nbREG-startnode->loc.nbREG);
+        printf("valeur minimal de la phase %d = %d avec %d passage par REG \n", it_boucle, end_node->value, end_node->loc.nbREG-startnode->loc.nbREG);
 
         gettimeofday(&start3, NULL);
         t_move *ls_move_ef = trad_direction(ls_mvt, startnode->loc.nbREG, path);
@@ -106,7 +106,7 @@ int main() {
         seconds = end3.tv_sec - start3.tv_sec;
         microseconds = end3.tv_usec - start3.tv_usec;
         double elapsed3 = seconds + microseconds * 1e-6;
-        printf("The list of moves in boucle %d done is -> ", it_boucle);
+        printf("The list of moves in phase %d done is -> ", it_boucle);
 
         for (int i = 0; i < 5 - startnode->loc.nbREG; i++) {
             printf("%s :", getMoveAsString(ls_move_ef[i]));
